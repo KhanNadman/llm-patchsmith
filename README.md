@@ -81,6 +81,7 @@ llm-patchsmith/
 ├── README.md
 └── TECH_NOTE.md
 
+
 🔧 Configuration
 
 Use .env.example as a template:
@@ -91,6 +92,7 @@ Create your .env:
 cp .env.example .env
 
 🔒 Safety Guardrails
+
 PatchSmith uses several layers of safety:
 
 1. Strict System Prompt
@@ -114,6 +116,7 @@ If the LLM outputs invalid JSON:
 A Python fallback generates structured patch notes safely.
 
 📊 Telemetry
+
 Every request logs an entry in:
 telemetry.log
 
@@ -129,6 +132,7 @@ Example:
 }
 
 🧪 Running Offline Evaluation
+
 Run:
 python run_eval.py
 Output example:
@@ -141,6 +145,7 @@ Passed 14/15 tests → 93.3%
 ✔️ Assignment Requirements Checklist
 
 Requirement	Status
+
 LLM core flow	      ✅ Done
 Enhancement (tool)	✅ Done
 Safety guardrails	  ✅ Done
