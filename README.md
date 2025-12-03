@@ -141,16 +141,17 @@ Passed 14/15 tests → 93.3%
 ✔️ Assignment Requirements Checklist
 
 Requirement	Status
-LLM core flow	    ✅ Done
+LLM core flow	      ✅ Done
 Enhancement (tool)	✅ Done
-Safety guardrails	✅ Done
-Telemetry logging	✅ Done
+Safety guardrails	  ✅ Done
+Telemetry logging	  ✅ Done
 Offline evaluation	✅ Done
 README	            ✅ Done
-Tech note	        ✅ Done
-UI polish	        ✅ Done
+Tech note	          ✅ Done
+UI polish	          ✅ Done
 
 🎉 Conclusion
+
 PatchSmith is a complete LLM application running entirely on a local model via Ollama.
 
 It demonstrates:
