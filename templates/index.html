@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en" xml:lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>PatchSmith – LLM Patch Note Writer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --bg: #0f172a;          /* page background */
+        --card-bg: #020617;     /* main card background */
+        --accent: #38bdf8;      /* buttons, highlights */
+        --accent-soft: #0ea5e9;
+        --error-bg: #fee2e2;
+        --error-text: #991b1b;
+        --text-main: #e5e7eb;
+        --text-muted: #9ca3af;
+        --border-subtle: #1f2937;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: radial-gradient(circle at top, #1e293b, #020617 55%);
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+      }
+
+      .app-shell {
+        width: 100%;
+        max-width: 960px;
+        background: var(--card-bg);
+        border-radius: 18px;
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        box-shadow: 0 22px 40px rgba(15, 23, 42, 0.8);
+        padding: 1.75rem 1.75rem 1.5rem;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .title-wrap h1 {
+        font-size: 1.35rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+
+      .logo-pill {
+        width: 26px;
+        height: 26px;
+        border-radius: 999px;
+        background: radial-gradient(circle at 30% 20%, #ffffff, #0ea5e9 55%);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #020617;
+      }
+
+      .subtitle {
+        margin: 0.15rem 0 0;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+
+      .tagline {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        padding: 0.25rem 0.6rem;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        background: rgba(15, 23, 42, 0.8);
+        white-space: nowrap;
+      }
+
+      form {
+        margin-top: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      label {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 180px;
+        max-height: 340px;
+        resize: vertical;
+        border-radius: 12px;
+        border: 1px solid var(--border-subtle);
+        padding: 0.8rem 0.9rem;
+        font-family: inherit;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        background: #020617;
+        color: var(--text-main);
+        outline: none;
+        box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.5);
+      }
+
+      textarea::placeholder {
+        color: #4b5563;
+      }
+
+      textarea:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.15),
+          0 12px 25px rgba(15, 23, 42, 0.9);
+      }
+
+      .form-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .helper-text {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+      }
+
+      button[type="submit"] {
+        margin-left: auto;
+        padding: 0.55rem 1.35rem;
+        border-radius: 999px;
+        border: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+        color: #0b1120;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        box-shadow: 0 12px 22px rgba(56, 189, 248, 0.45);
+        transition: transform 0.08s ease, box-shadow 0.08s ease,
+          filter 0.08s ease;
+      }
+
+      button[type="submit"]:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.03);
+        box-shadow: 0 16px 30px rgba(56, 189, 248, 0.55);
+      }
+
+      button[type="submit"]:active {
+        transform: translateY(0px) scale(0.99);
+        box-shadow: 0 8px 18px rgba(56, 189, 248, 0.4);
+      }
+
+      .result-wrapper {
+        margin-top: 1.1rem;
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr);
+        gap: 0.75rem;
+      }
+
+      .panel-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+
+      .panel-label span.dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: var(--accent);
+      }
+
+      .result-box,
+      .error-box {
+        border-radius: 12px;
+        padding: 0.85rem 0.9rem;
+        font-size: 0.88rem;
+        white-space: pre-wrap;
+      }
+
+      .result-box {
+        background: #020617;
+        border: 1px solid var(--border-subtle);
+        color: var(--text-main);
+      }
+
+      .error-box {
+        background: var(--error-bg);
+        color: var(--error-text);
+        border: 1px solid #fecaca;
+      }
+
+      .empty-state {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        padding: 0.8rem 0.9rem;
+        border-radius: 12px;
+        border: 1px dashed #374151;
+        background: rgba(15, 23, 42, 0.6);
+      }
+
+      .meta-bar {
+        margin-top: 0.35rem;
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      @media (max-width: 720px) {
+        .app-shell {
+          padding: 1.25rem 1rem 1rem;
+        }
+        header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        button[type="submit"] {
+          width: 100%;
+          justify-content: center;
+        }
+        .form-footer {
+          align-items: flex-start;
+        }
+        .meta-bar {
+          justify-content: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header>
+        <div class="title-wrap">
+          <h1>
+            <span class="logo-pill">P</span>
+            PatchSmith
+          </h1>
+          <p class="subtitle">Turn messy change bullets into clean patch notes.</p>
+        </div>
+        <div class="tagline">
+          LLM-powered · Local model (Ollama)
+        </div>
+      </header>
+
+      <form method="POST">
+        <label for="bullets">Paste your change bullets:</label>
+        <textarea
+          id="bullets"
+          name="bullets"
+          placeholder="- fixed login bug&#10;- improved dashboard loading&#10;- added dark mode toggle"
+        >{{ bullets }}</textarea>
+
+        <div class="form-footer">
+          <div class="helper-text">
+            Tip: one change per line. The app will group them into sections and
+            suggest a release header.
+          </div>
+          <button type="submit">
+            <span>Generate Patch Notes</span>
+            <span>↵</span>
+          </button>
+        </div>
+      </form>
+
+      {% if error %}
+        <div class="result-wrapper">
+          <div class="panel-label">
+            <span class="dot"></span>
+            Error
+          </div>
+          <div class="error-box">{{ error }}</div>
+        </div>
+      {% elif patch_notes %}
+        <div class="result-wrapper">
+          <div class="panel-label">
+            <span class="dot"></span>
+            Patch notes
+          </div>
+          <div class="result-box">{{ patch_notes }}</div>
+        </div>
+      {% else %}
+        <div class="result-wrapper">
+          <div class="panel-label">
+            <span class="dot"></span>
+            Patch notes
+          </div>
+          <div class="empty-state">
+            Generated patch notes will appear here. Try pasting a few bullet points
+            above and clicking <strong>Generate Patch Notes</strong>.
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="meta-bar">
+        Backend: Flask · LLM via Ollama · External time API for release date
+      </div>
+    </div>
+  </body>
+</html>

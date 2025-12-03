@@ -1,0 +1,62 @@
+[
+  {
+    "input": "- fixed login bug\n- improved dashboard loading\n- added dark mode toggle",
+    "expected": ["Bug", "Improvement", "Dark"]
+  },
+  {
+    "input": "- fixed crash on startup",
+    "expected": ["Bug", "Fix"]
+  },
+  {
+    "input": "- added shopping cart\n- added order summary screen",
+    "expected": ["New", "Feature"]
+  },
+  {
+    "input": "- optimized search performance\n- reduced load time",
+    "expected": ["Improve", "Performance"]
+  },
+  {
+    "input": "- fixed security issue with JWT validation",
+    "expected": ["Security", "Fix"]
+  },
+  {
+    "input": "- improved UI layout\n- improved color palette",
+    "expected": ["UI", "Improve"]
+  },
+  {
+    "input": "- added email notifications",
+    "expected": ["Email", "New"]
+  },
+  {
+    "input": "- fixed rounding issue in checkout\n- fixed tax calculation",
+    "expected": ["Fix", "Bug"]
+  },
+  {
+    "input": "- added dark mode",
+    "expected": ["Dark"]
+  },
+  {
+    "input": "- improved battery usage",
+    "expected": ["Improve"]
+  },
+  {
+    "input": "- fixed mobile responsiveness",
+    "expected": ["Mobile", "Fix"]
+  },
+  {
+    "input": "- added analytics tracking",
+    "expected": ["New", "Analytics"]
+  },
+  {
+    "input": "- improved pagination logic",
+    "expected": ["Improve"]
+  },
+  {
+    "input": "- fixed crash when deleting files",
+    "expected": ["Bug", "Fix"]
+  },
+  {
+    "input": "- added push notifications support",
+    "expected": ["New", "Notification"]
+  }
+]
